@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/lazygophers/log"
-	"github.com/lazygophers/lrpc"
+	"github.com/lazygophers/lrpc/middleware/service_discovery/ldiscovery"
 	"github.com/lazygophers/maids/internal/state"
 )
 
@@ -13,9 +13,9 @@ func main() {
 		return
 	}
 
-	app := lrpc.NewApp(&lrpc.Config{
-		Name: state.State.Config.Name,
-	})
+	app.OnListen(ldiscovery.OnListen)
+	app.OnShutdown(ldiscovery.OnShutdown)
+	app.OnListen(state.AfterListen)
 
 	app.AddRoutes(Routes)
 
